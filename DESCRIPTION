@@ -2,8 +2,8 @@ Package: roosdorp
 Type: Package
 Title: Thomas Roosdorp's personal R package
 Version: 0.1.0
-Author: Thomas Roosdorp (Phiido)
-Maintainer: Thomas Roosdorp (Phiido)
+Author: Thomas Roosdorp
+Maintainer: Thomas Roosdorp <thomas.roosdorp@gmail.com>
 Description: Miscellaneous R functions.
 License: GNU GPLv3
 Encoding: UTF-8
