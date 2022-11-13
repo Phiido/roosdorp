@@ -1,0 +1,26 @@
+---
+title: "Generate Test Report"
+output: pdf_document
+params: 
+  df: ""
+  id: ""
+---
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+
+cars <- params$df
+car_name <- params$id
+
+```
+
+Report for the species: `r params$id`
+
+```{r}
+cars %>%
+  filter(car == car_name) %>%
+  ggplot(aes(x = cyl, y = mpg, fill = cyl)) +
+  geom_point()
+```
