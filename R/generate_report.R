@@ -41,7 +41,7 @@ generate_report <- function(df, var, template, ...) {
 
     UIDs <- pull(df, car)
     var = "car"
-    template = "./test/report_test.Rmd"
+    template = system.file('rmd', 'report_test.Rmd', package = 'roosdorp')
   }
 
   if (!is.data.frame(df)) stop("Input must be a data frame")
