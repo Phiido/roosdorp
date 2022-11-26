@@ -5,7 +5,7 @@ Version: 0.1.1
 Author: Thomas Roosdorp
 Maintainer: Thomas Roosdorp <thomas.roosdorp@gmail.com>
 Description: Miscellaneous R functions.
-License: GNU GPLv3
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Depends: 
@@ -25,4 +25,4 @@ Suggests:
     roxygen2
 URL: https://github.com/phiido/roosdorp
 BugReports: https://github.com/phiido/roosdorp/issues
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.2
