@@ -1,15 +1,16 @@
 Package: roosdorp
-Type: Package
-Title: Thomas Roosdorp's personal R package
+Title: Personal R Package With Misc Functions
 Version: 0.1.1
-Author: Thomas Roosdorp
-Maintainer: Thomas Roosdorp <thomas.roosdorp@gmail.com>
-Description: Miscellaneous R functions.
-License: GPL (>= 3)
+Authors@R: person("Thomas", "Roosdorp", email = "thomas.roosdorp@gmail.com", role = c("aut", "cre"))
+Description: A compilation of miscellaneous functions to help with uncommon tasks.
+License: MIT + file LICENSE
+URL: https://github.com/phiido/roosdorp
+BugReports: https://github.com/phiido/roosdorp/issues
 Encoding: UTF-8
-LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.2
 Depends: 
-    R (>= 2.15.0)
+    R (>= 3.5.0)
 Imports: 
     dplyr,
     fs,
@@ -23,6 +24,3 @@ Imports:
 Suggests:
     devtools,
     roxygen2
-URL: https://github.com/phiido/roosdorp
-BugReports: https://github.com/phiido/roosdorp/issues
-RoxygenNote: 7.2.2
