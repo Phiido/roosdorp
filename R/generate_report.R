@@ -1,181 +1,209 @@
+#' Render custom reports from data.frame
 #'
-#' Render reports
+#' `generate_report()`renders multiple reports from custom Rmd-template, and
+#' uses parallel computing if possible for faster processing.
 #'
-#' Render multiple reports from Rmd-template. Can use parallel computing if possible.
-#' Make sure there is sufficient memory and CPU available. Rmarkdown/tinytex may throw errors otherwise.
+#' Make sure there is sufficient memory and CPU available. Rmarkdown/tinytex may
+#' throw errors otherwise. Mostly an issue if running on a laptop.
 #'
-#' @author Thomas Roosdorp
+#' @param data Input as data frame.
+#' @param var Name of variable containing UID for reports.
+#' @param template File path with Rmd-template for rendering.
+#' @param by Variable to group reports into sub-folders. Default is NULL.
+#' @param overwrite Whether existing files should be overwritten.
+#' @param output_folder Folder to use for output. Default (relative to project): 'output/reports'.
+#' @param ... Additional arguments than can be passed down to
+#'   rmarkdown:render(). Argument quiet is set to TRUE.
 #'
-#' @param df Input as data frame
-#' @param var Name of variable containing UID for reports
-#' @param template File path with Rmd-template for rendering
-#'
-#' Optional arguments
-#' @param by Which variable should be used for grouping outputs, or none
-#' @param overwrite Whether existing files should be overwritten
-#' @param is_quiet Whether Rmarkdown should be quiet
-#' @param output_folder Folder to use for output. Default: './output/reports'
+#' @return NULL
 #'
 #' @export
+generate_report <- function(data,
+                            var,
+                            template,
+                            by = NULL,
+                            overwrite = TRUE,
+                            output_folder = "./output/reports",
+                            ...) {
 
-generate_report <- function(df, var, template, ...) {
-  # TODO Implement pipe function
+  if (!is.data.frame(data)) stop("Input must be a data frame")
+  if (!file.exists(template)) stop("Could not find valid template file")
 
-  args_default <- list(by = NULL,
-                       overwrite = TRUE,
-                       isQuiet = TRUE,
-                       output_folder = file.path(".", "output", "reports"),
-                       prefix = NULL) # TODO Add prefix/suffix to output filename
+  message("Attempting to process data and generate reports..")
 
-  args_in <- lapply(substitute(list(...)), function(x) ifelse(is.character(x) | is.null(x) | is.logical(x), x, deparse(x)))
-  args <- modifyList(args_default, args_in)
+  by <- rlang::enquo(by)
+  var <- rlang::enquo(var)
 
-  rm(list = c("args_default", "args_in"))
+  use_groups <- !rlang::quo_is_null(by)
 
-  by <- args$by
-  useGroups <- !is_empty(by)
-  output_folder <- args$output_folder
+  if (!dir.exists(output_folder)) dir.create(output_folder, recursive = TRUE)
 
-  if (is.character(df) && df == "test") {
-    df <- as_tibble(mtcars, rownames = "car")
-
-    UIDs <- pull(df, car)
-    var = "car"
-    template = system.file('rmd', 'report_test.Rmd', package = 'roosdorp')
-  }
-
-  if (!is.data.frame(df)) stop("Input must be a data frame")
-  if (!is.character(template) || !file.exists(template)) stop("Could not find valid template file")
-  if (!(is.character(var) && length(var) == 1)) stop("UID needs to be single element char")
-
-  message("\nAttempting to process data and generate reports.. This may take a while")
-
-  # Removes rows with missing values and all duplicates
-  df_clean <- df %>%
-    filter(!is.na(!!var)) %>%
+  data_clean <- data |>
+    dplyr::filter(!is.na(!!var)) |>
     unique()
 
-  UIDs <- pull(df_clean,!!var)
-  nDiff <- nrow(df) - nrow(df_clean)
-  df <- df_clean
+  UIDs <- dplyr::pull(data_clean, !!var)
+  n_UID <- length(UIDs)
+  n_diff <- nrow(data) - nrow(data_clean)
 
-  rm(df_clean)
+  if (n_diff > 0) warning(message(cat("Skipping", n_diff, "rows that are either duplicates or missing values")))
 
-  if (nDiff > 0) warning(message(cat("Removed", nDiff, "duplicates or missing values")))
+  # Create all sub-folders if by is specified
+  if (use_groups) {
 
-  # TODO Reverse folder creation if function ends prematurely
-  # Create all by group folders
-  if (useGroups) {
-
-    by_groups <- df %>%
-      select(!!by) %>%
-      filter(!is.na(!!by)) %>%
-      distinct() %>%
-      pull(!!by) %>%
+    groups <- data_clean |>
+      dplyr::pull(!!by) |>
+      stats::na.omit() |>
+      unique() |>
       textclean::replace_non_ascii()
 
-    for (group in by_groups) {
+    for (group in groups) {
       group_folder <- file.path(output_folder, group)
 
-      if (!dir.exists(group_folder))
-        dir.create(group_folder)
+      if (!dir.exists(group_folder)) dir.create(group_folder)
     }
   }
 
   # Check for existing files to exclude if overwrite is FALSE
-  if (!args$overwrite) {
+  if (!overwrite) {
     rmUID <- NULL
 
-    if (!useGroups) {
+    if (!use_groups) {
       files <- list.files(output_folder)
-      rmUID <- path_ext_remove(files)
+      rmUID <- fs::path_ext_remove(files)
 
-    } else { # Else iterate by group
+    } else { # Else iterate by group folders
 
-      for (group in by_groups) {
+      for (group in groups) {
         target_folder <- file.path(output_folder, group)
         files <- list.files(target_folder)
-        UID_exist <- path_ext_remove(files)
+        UID_exist <- fs:path_ext_remove(files)
 
         append(rmUID, UID_exist)
       }
     }
 
-    nDiff <- length(rmUID)
+    n_diff <- length(rmUID)
     UIDs <- setdiff(UIDs, rmUID)
+    n_UID <- length(UIDs)
 
-    if (is_empty(UIDs))
+    if (n_UID == 0)
       stop("Files already exists and argument overwrite is FALSE")
   }
 
-  nUID <- length(UIDs)
-  nCores <- detectCores()
-  useParallel <-  nUID > 10 && nCores > 3 # If above certain threshold and enough cores, use parallel computing
+  # If above certain threshold and enough cores, use parallel computing
+  n_cores <- parallel::detectCores()
+  use_parallel <-  n_UID > 10 && n_cores > 2
 
-  if (nCores < 3)
+  if (n_cores < 3)
     message("Not enough cores for parallel computing. Using sequential computing.")
 
-  # Progress combine function
-  updateProgress <- function(iterator){
-    progressBar <- timerProgressBar(min = 1, max = iterator - 1, style = 3)
+  progress_bar <- pbapply::timerProgressBar(min = 1, max = n_UID - 1, style = 3)
+
+  update_progress <- function() {
     count <- 0
 
     function(...) {
       count <<- count + length(list(...)) - 1
-      setTimerProgressBar(progressBar, count)
+      pbapply::setTimerProgressBar(progress_bar, count)
       flush.console()
       cbind(...)
     }
   }
 
-  if (useParallel) {
+  if (use_parallel) {
 
-    message("Currently parallel computing does not show a progressbar. Just be patient")
-    # Using less cores than max remedies issues with latex; Outfile enables printing
-    cluster <- makeCluster(nCores - 2, outfile = "", methods = FALSE)
-    registerDoParallel(cluster)
+    # Using less cores than max remedies issues with latex
+    cluster <- parallel::makeCluster(n_cores - 1, methods = FALSE)
+    doSNOW::registerDoSNOW(cluster)
 
-  } else registerDoSEQ() # Else use sequential computing which treats %dopar% as %do%
+  } else foreach::registerDoSEQ() # Else use sequential computing which treats %dopar% as %do%
 
-  # TODO Fix progressbar updating during paralell computing
+  # TODO Fix progressbar updating during parallel computing
 
-  # Stops clusters regardless if function finishes
-  on.exit({
-    if (useParallel) {
-      try({
-        stopImplicitCluster()
-        stopCluster(cluster)
-      })
-    }
-  })
-
-foreach(i = icount(nUID), .combine = updateProgress(nUID), .multicombine = TRUE, .packages = c("dplyr"), .verbose = FALSE) %dopar% {
+  foreach::foreach(i = 1:n_UID, .combine = update_progress(), .packages = c("dplyr")) %dopar% {
 
     file_out <- rmarkdown::render(template,
-                                  params = list(df = df,
+                                  params = list(data = data,
                                                 id = UIDs[i]),
                                   output_file = UIDs[i],
                                   quiet = TRUE)
 
-    if (useGroups) {
-      group <- df %>%
-        filter((!!as.symbol(var)) == UIDs[i]) %>%
-        pull(by)
+    if (use_groups) {
+      group <- data_clean |>
+        dplyr::filter((!!var) == UIDs[i]) |>
+        dplyr::pull(!!by)
 
       target_folder <- file.path(output_folder, group)
 
     } else target_folder <- output_folder
 
-    # Need to do this way as render() argument of output_dir causes issues with tinytex
+    # Solution for issues with argument output_dir in render() together with tinytex
     file_name <- basename(file_out)
 
+    # Move file to target location
     file.rename(file_out, file.path(target_folder, file_name))
+
   }
 
-  # closepb(progress_bar)
-  # close(pb)
+  # Stops clusters regardless if function finishes
+  on.exit({
+    if (use_parallel) {
+      try({
+        parallel::stopCluster(cluster)
+      })
+    }
+  })
 
-  if (!args$overwrite && nDiff > 0)
-    message(cat("Overwrite is set to FALSE.", "Skipped", nDiff, "reports"))
-  message(cat("\nGeneration finished with", nUID, "reports."))
+  pbapply::closepb(progress_bar)
+
+  if (!overwrite && n_diff > 0)
+    message(cat("\nOverwrite is set to FALSE.", "Skipped", n_diff, "reports"))
+
+  message(cat("\nGeneration finished with", n_UID, "reports."))
+  message(cat("Saved reports at:", output_folder))
+
+  invisible(NULL)
+}
+
+# ------------------ Helper Functions -----------------------
+
+# TODO Set and use the same template across a session.
+# If empty, return current template if set
+set_template <- function() {}
+
+#' Get the example template that is used for render testing
+#'
+#' @return NULL
+#'
+#' @export
+get_example <- function() {
+
+  template <- system.file("extdata", "report_test.Rmd", package = "roosdorp")
+  folder <- "./Rmd"
+
+  if(!dir.exists(folder)) dir.create(folder)
+
+  file_path <- file.path(folder, basename(template))
+  file.copy(template, file_path)
+  message("Template copied to './Rmd/")
+
+  invisible(NULL)
+}
+
+#' Generate a test report
+#'
+#' @param ... Optional arguments for parent function
+#'
+#' @return NULL
+#'
+#' @export
+generate_test <- function(...) {
+
+  data <- dplyr::as_tibble(mtcars, rownames = "car")
+  template <- system.file("extdata", "report_test.Rmd", package = "roosdorp")
+
+  generate_report(data, var = car, template, ...)
+
+  invisible(NULL)
 }

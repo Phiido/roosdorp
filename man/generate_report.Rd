@@ -2,31 +2,39 @@
 % Please edit documentation in R/generate_report.R
 \name{generate_report}
 \alias{generate_report}
-\title{Render reports}
+\title{Render custom reports from data.frame}
 \usage{
-generate_report(df, var, template, ...)
+generate_report(
+  data,
+  var,
+  template,
+  by = NULL,
+  overwrite = TRUE,
+  output_folder = "./output/reports",
+  ...
+)
 }
 \arguments{
-\item{df}{Input as data frame}
+\item{data}{Input as data frame.}
 
-\item{var}{Name of variable containing UID for reports}
+\item{var}{Name of variable containing UID for reports.}
 
-\item{template}{File path with Rmd-template for rendering
+\item{template}{File path with Rmd-template for rendering.}
 
-Optional arguments}
+\item{by}{Variable to group reports into sub-folders. Default is NULL.}
 
-\item{by}{Which variable should be used for grouping outputs, or none}
+\item{overwrite}{Whether existing files should be overwritten.}
 
-\item{overwrite}{Whether existing files should be overwritten}
+\item{output_folder}{Folder to use for output. Default (relative to project): 'output/reports'.}
 
-\item{is_quiet}{Whether Rmarkdown should be quiet}
-
-\item{output_folder}{Folder to use for output. Default: './output/reports'}
+\item{...}{Additional arguments than can be passed down to
+rmarkdown:render(). Argument quiet is set to TRUE.}
 }
 \description{
-Render multiple reports from Rmd-template. Can use parallel computing if possible.
-Make sure there is sufficient memory and CPU available. Rmarkdown/tinytex may throw errors otherwise.
+\code{generate_report()}renders multiple reports from custom Rmd-template, and
+uses parallel computing if possible for faster processing.
 }
-\author{
-Thomas Roosdorp
+\details{
+Make sure there is sufficient memory and CPU available. Rmarkdown/tinytex may
+throw errors otherwise. Mostly an issue if running on a laptop.
 }
