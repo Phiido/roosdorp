@@ -2,21 +2,21 @@
 title: "Generate Test Report"
 output: pdf_document
 params: 
-  df: ""
+  data: ""
   id: ""
 ---
 
 ```{r}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 
 library(tidyverse)
 
-cars <- params$df
+cars <- params$data
 car_name <- params$id
 
 ```
 
-Report for the species: `r params$id`
+Report for the car: `r car_name`
 
 ```{r}
 cars %>%
