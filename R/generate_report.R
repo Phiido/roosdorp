@@ -119,8 +119,6 @@ generate_report <- function(data,
 
   } else foreach::registerDoSEQ() # Else use sequential computing which treats %dopar% as %do%
 
-  # TODO Fix progressbar updating during parallel computing
-
   foreach::foreach(i = 1:n_UID, .combine = update_progress(), .packages = c("dplyr")) %dopar% {
 
     file_out <- rmarkdown::render(template,
@@ -186,7 +184,7 @@ get_example <- function() {
 
   file_path <- file.path(folder, basename(template))
   file.copy(template, file_path)
-  message("Template copied to './Rmd/")
+  message("Template copied to './Rmd/'")
 
   invisible(NULL)
 }
