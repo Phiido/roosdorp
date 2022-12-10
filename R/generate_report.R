@@ -3,6 +3,10 @@
 #' `generate_report()`renders multiple reports from custom Rmd-template, and
 #' uses parallel computing if possible for faster processing.
 #'
+#' It uses two Rmarkdown parameters that needs to be present in the template in order for proper rendering:
+#' df and id. These can then be used in the Rmarkdown file as usual for data handling or visualization.
+#' See the example template for proper setup, `get_example()`.
+#'
 #' Make sure there is sufficient memory and CPU available. Rmarkdown/tinytex may
 #' throw errors otherwise. Mostly an issue if running on a laptop.
 #'
