@@ -19,10 +19,12 @@ get_libs <- function(lib = "all") {
   libs <- list(base = list("tidyverse", "writexl", "remotes", "fs", "rlang",
                            "pbapply", "textclean", "foreach", "doParallel"),
                epi = list("Epi", "MortalityTables"),
-               markdown = list("rmarkdown", "bookdown", "tinytex", "knitr"),
+               stat = list("infer", "pwr", "naivebayes", "pROC", "rpart",
+                           "randomForest", "vtreat", "reclin"),
+               mdown = list("rmarkdown", "bookdown", "tinytex", "knitr"),
                bench = list("lobstr", "profvis","benchmarkme", "bench"),
                dev = list("devtools", "roxygen2", "styler",
-                          "lintr", "withr", "available")
+                          "lintr", "withr", "available", "R6")
                )
 
   if (lib == "all") libs_vec <- unlist(libs)
