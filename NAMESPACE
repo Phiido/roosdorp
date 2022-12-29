@@ -3,4 +3,7 @@
 export(generate_report)
 export(generate_test)
 export(get_example)
-export(get_libs)
+export(install_libs)
+export(load_libs)
+export(remove_libs)
+export(unload_libs)
