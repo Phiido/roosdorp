@@ -111,6 +111,9 @@ unload_libs <- function(lib) {
 #--------------- Helper functions
 
 #' Function to handle input and either load or unload packages
+#'
+#' @param lib List of package names
+#' @param method Whether to load or unload packages
 handle_libs <- function(lib, method) {
 
   # Check that the input is not null
@@ -129,6 +132,8 @@ handle_libs <- function(lib, method) {
 }
 
 #' Function to extract package names from a pre-determined set of data
+#'
+#' @param lib List of package names
 extract_libs <- function(lib) {
   # Extract the names of the libraries to remove
   if (any(lib == "all")) {
@@ -139,6 +144,8 @@ extract_libs <- function(lib) {
 }
 
 #' Function that terminates parent function if lib is NULL
+#'
+#' @param lib List of package names
 is_lib_null <- function(lib) {
   if (is.null(lib)) {
     stop("'lib' must not be null")
