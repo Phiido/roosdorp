@@ -35,24 +35,32 @@ generate_report <- function(data,
 
   message("Attempting to process data and generate reports..")
 
+  # Convert the group and id variables to symbols
   by <- rlang::enquo(by)
-  var <- rlang::enquo(var)
+  id_var <- rlang::enquo(var)
 
+  # Check if the group argument was specified
   use_groups <- !rlang::quo_is_null(by)
 
+  # Create the output folder if it does not exist
   if (!dir.exists(output_folder)) dir.create(output_folder, recursive = TRUE)
 
+  # Remove rows with missing or duplicate values for the id variable
   data_clean <- data |>
-    dplyr::filter(!is.na(!!var)) |>
+    dplyr::filter(!is.na(!!id_var)) |>
     unique()
 
-  UIDs <- dplyr::pull(data_clean, !!var)
-  n_UID <- length(UIDs)
+  # Extract the unique values of the id variable
+  ids <- dplyr::pull(data_clean, !!id_var)
+  n_ids <- length(ids)
+
+  # Calculate the number of rows that were removed
   n_diff <- nrow(data) - nrow(data_clean)
 
-  if (n_diff > 0) warning(message(cat("Skipping", n_diff, "rows that are either duplicates or missing values")))
+  # Print a warning if rows were removed
+  if (n_diff > 0) warning(message(paste("Skipping", n_diff, "rows that are either duplicates or missing values")))
 
-  # Create all sub-folders if by is specified
+  # Create sub-folders for each group if a group variable was specified
   if (use_groups) {
 
     groups <- data_clean |>
@@ -61,6 +69,7 @@ generate_report <- function(data,
       unique() |>
       textclean::replace_non_ascii()
 
+    # Create a sub-folder for each group
     for (group in groups) {
       group_folder <- file.path(output_folder, group)
 
@@ -68,42 +77,58 @@ generate_report <- function(data,
     }
   }
 
-  # Check for existing files to exclude if overwrite is FALSE
+  # Check for existing files if overwrite is FALSE
   if (!overwrite) {
-    rmUID <- NULL
+
+    # Initialize a vector to store the IDs of existing files
+    existing_ids <- NULL
 
     if (!use_groups) {
+
+      # Extract the names of the existing files in the output folder
       files <- list.files(output_folder)
-      rmUID <- fs::path_ext_remove(files)
+      # Remove the file extensions from the file names
+      existing_ids <- fs::path_ext_remove(files)
 
     } else { # Else iterate by group folders
 
+      # Iterate over each group
       for (group in groups) {
-        target_folder <- file.path(output_folder, group)
-        files <- list.files(target_folder)
-        UID_exist <- fs:path_ext_remove(files)
-
-        append(rmUID, UID_exist)
+        # Construct the path to the group's output folder
+        group_folder <- file.path(output_folder, group)
+        # Extract the names of the existing files in the group's output folder
+        files <- list.files(group_folder)
+        # Remove the file extensions from the file names
+        group_ids <- fs::path_ext_remove(files)
+        # Append the IDs of the existing files to the list of existing IDs
+        existing_ids <- c(existing_ids, group_ids)
       }
     }
 
-    n_diff <- length(rmUID)
-    UIDs <- setdiff(UIDs, rmUID)
-    n_UID <- length(UIDs)
+    # Calculate the number of IDs that are already associated with existing files
+    n_diff <- length(existing_ids)
+    # Remove the IDs of the existing files from the list of IDs
+    ids <- dplyr::setdiff(ids, existing_ids)
+    # Calculate the number of remaining IDs
+    n_ids <- length(ids)
 
-    if (n_UID == 0)
+    # Check if all IDs are already associated with existing files
+    if (n_ids == 0)
       stop("Files already exists and argument overwrite is FALSE")
   }
 
   # If above certain threshold and enough cores, use parallel computing
   n_cores <- parallel::detectCores()
-  use_parallel <-  n_UID > 10 && n_cores > 2
+  use_parallel <-  n_ids > 10 && n_cores > 2
 
+  # Check if the number of cores is sufficient for parallel computing
   if (n_cores < 3)
     message("Not enough cores for parallel computing. Using sequential computing.")
 
-  progress_bar <- pbapply::timerProgressBar(min = 1, max = n_UID - 1, style = 3)
+  # Initialize a progress bar to track the progress of the loop
+  progress_bar <- pbapply::timerProgressBar(min = 1, max = n_ids - 1, style = 3)
 
+  # Define a function to update the progress bar when used in a foreach loop
   update_progress <- function() {
     count <- 0
 
@@ -115,25 +140,31 @@ generate_report <- function(data,
     }
   }
 
+  # Check if parallel computing should be used
   if (use_parallel) {
 
-    # Using less cores than max remedies issues with latex
+    # Create a cluster with one fewer cores than the maximum number of cores
+    # This remedies issues with LaTeX
     cluster <- parallel::makeCluster(n_cores - 1, methods = FALSE)
     doSNOW::registerDoSNOW(cluster)
 
-  } else foreach::registerDoSEQ() # Else use sequential computing which treats %dopar% as %do%
+    # Else use sequential computing, which treats %dopar% as %do%
+  } else foreach::registerDoSEQ()
 
-  foreach::foreach(i = 1:n_UID, .combine = update_progress(), .packages = c("dplyr")) %dopar% {
+  # Iterate over each ID in the list
+  foreach::foreach(i = 1:n_ids, .combine = update_progress(), .packages = c("dplyr")) %dopar% {
 
+    # Render the template with the specified data and ID
     file_out <- rmarkdown::render(template,
                                   params = list(data = data,
-                                                id = UIDs[i]),
-                                  output_file = UIDs[i],
+                                                id = ids[i]),
+                                  output_file = ids[i],
                                   quiet = TRUE)
 
+    # Determine the target folder for the rendered file
     if (use_groups) {
       group <- data_clean |>
-        dplyr::filter((!!var) == UIDs[i]) |>
+        dplyr::filter((!!id_var) == UIDs[i]) |>
         dplyr::pull(!!by)
 
       target_folder <- file.path(output_folder, group)
@@ -143,12 +174,12 @@ generate_report <- function(data,
     # Solution for issues with argument output_dir in render() together with tinytex
     file_name <- basename(file_out)
 
-    # Move file to target location
+    # Move the rendered file to the target folder
     file.rename(file_out, file.path(target_folder, file_name))
 
   }
 
-  # Stops clusters regardless if function finishes
+  # Stop the cluster when the function finishes, regardless of success
   on.exit({
     if (use_parallel) {
       try({
@@ -157,14 +188,17 @@ generate_report <- function(data,
     }
   })
 
+  # Close the progress bar
   pbapply::closepb(progress_bar)
 
+  # Print a message indicating the number of reports that were generated and skipped
   if (!overwrite && n_diff > 0)
     message(cat("\nOverwrite is set to FALSE.", "Skipped", n_diff, "reports"))
 
-  message(cat("\nGeneration finished with", n_UID, "reports."))
+  message(cat("\nGeneration finished with", n_ids, "reports."))
   message(cat("Saved reports at:", output_folder))
 
+  # Return an invisible NULL value
   invisible(NULL)
 }
 
@@ -181,15 +215,24 @@ set_template <- function() {}
 #' @export
 get_example <- function() {
 
-  template <- system.file("extdata", "report_test.Rmd", package = "roosdorp")
-  folder <- "./Rmd"
+  # Specify the path to the template file
+  template_file <- system.file("extdata", "report_test.Rmd", package = "roosdorp")
 
-  if(!dir.exists(folder)) dir.create(folder)
+  # Specify the output folder
+  output_folder <- "./Rmd"
 
-  file_path <- file.path(folder, basename(template))
-  file.copy(template, file_path)
+  # Check if the output folder exists
+  if(!dir.exists(output_folder)) dir.create(output_folder)
+
+  # Construct the full path for the copied template file
+  copied_template_path <- file.path(output_folder, basename(template_file))
+  # Copy the template file to the output folder
+  file.copy(template_file, copied_template_path)
+
+  # Print a message indicating that the template was copied
   message("Template copied to './Rmd/'")
 
+  # Return an invisible NULL value
   invisible(NULL)
 }
 
@@ -201,11 +244,14 @@ get_example <- function() {
 #'
 #' @export
 generate_test <- function(...) {
-
+  # Convert the mtcars data frame to a tibble
   data <- dplyr::as_tibble(mtcars, rownames = "car")
-  template <- system.file("extdata", "report_test.Rmd", package = "roosdorp")
+  # Specify the path to the template file
+  template_file <- system.file("extdata", "report_test.Rmd", package = "roosdorp")
 
-  generate_report(data, var = car, template, ...)
+  # Call the generate_report function to generate the reports
+  generate_report(data, var = car, template_file, ...)
 
+  # Return an invisible NULL value
   invisible(NULL)
 }
