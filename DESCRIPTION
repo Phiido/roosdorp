@@ -22,7 +22,8 @@ Imports:
     tinytex,
     knitr,
     pbapply,
-    purrr
+    purrr,
+    usethis
 Suggests:
     devtools,
     roxygen2

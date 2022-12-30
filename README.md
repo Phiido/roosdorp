@@ -30,3 +30,9 @@ library(roosdorp)
 # generate_report(mtcars, car, template)
 # generate_example()
 ```
+
+## Note
+
+Rendering markdown files on a network drive will cause issues. As per:
+<https://github.com/rstudio/rmarkdown/issues/1268> A solution to this is
+keeping the project and output folders on a hard drive.
