@@ -17,7 +17,7 @@ install_libs(lib = "all")
 
 "epi" - Packages for epidemiological data handling
 
-"markdown" - Packages for different type of markdown handling
+"mdown" - Packages for different type of markdown handling
 
 "bench" - Packages for benchmarking purposes
 

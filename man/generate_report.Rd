@@ -28,7 +28,11 @@ generate_report(
 \item{output_folder}{Folder to use for output. Default (relative to project): 'output/reports'.}
 
 \item{...}{Additional arguments than can be passed down to
-rmarkdown:render(). Argument quiet is set to TRUE.}
+rmarkdown:render(). Argument quiet is set to TRUE.
+
+Rendering markdown files on a network drive will cause issues.
+As per: https://github.com/rstudio/rmarkdown/issues/1268
+A solution to this is keeping the project and output folders on a hard drive.}
 }
 \description{
 \code{generate_report()}renders multiple reports from custom Rmd-template, and

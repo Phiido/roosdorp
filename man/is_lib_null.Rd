@@ -6,6 +6,9 @@
 \usage{
 is_lib_null(lib)
 }
+\arguments{
+\item{lib}{List of package names}
+}
 \description{
 Function that terminates parent function if lib is NULL
 }

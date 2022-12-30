@@ -6,6 +6,11 @@
 \usage{
 handle_libs(lib, method)
 }
+\arguments{
+\item{lib}{List of package names}
+
+\item{method}{Whether to load or unload packages}
+}
 \description{
 Function to handle input and either load or unload packages
 }

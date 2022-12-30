@@ -6,6 +6,9 @@
 \usage{
 extract_libs(lib)
 }
+\arguments{
+\item{lib}{List of package names}
+}
 \description{
 Function to extract package names from a pre-determined set of data
 }
