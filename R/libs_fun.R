@@ -59,7 +59,7 @@ install_libs <- function(lib = "all") {
     utils::install.packages(install_lib_names)
   }
 
-  return(invisible(NULL))
+  invisible(NULL)
 }
 
 #' Uninstalls packages from a pre-determined set
@@ -87,7 +87,7 @@ remove_libs <- function(lib) {
   # Print a message indicating the number of libraries removed
   message(paste("Removed", num_libs, "libraries."))
 
-  return(invisible(NULL))
+  invisible(NULL)
 }
 
 #' Load packages from a pre-determined set.
