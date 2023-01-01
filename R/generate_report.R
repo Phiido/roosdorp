@@ -10,6 +10,10 @@
 #' Make sure there is sufficient memory and CPU available. Rmarkdown/tinytex may
 #' throw errors otherwise. Mostly an issue if running on a laptop.
 #'
+#' Rendering markdown files on a network drive will cause issues.
+#' As per: https://github.com/rstudio/rmarkdown/issues/1268
+#' A solution to this is keeping the project and output folders on a hard drive.
+#'
 #' @param data Input as data frame.
 #' @param var Name of variable containing UID for reports.
 #' @param template File path with Rmd-template for rendering.
@@ -18,10 +22,6 @@
 #' @param output_folder Folder to use for output. Default (relative to project): 'output/reports'.
 #' @param ... Additional arguments than can be passed down to
 #'   rmarkdown:render(). Argument quiet is set to TRUE.
-#'
-#' Rendering markdown files on a network drive will cause issues.
-#' As per: https://github.com/rstudio/rmarkdown/issues/1268
-#' A solution to this is keeping the project and output folders on a hard drive.
 #'
 #' @return NULL
 #'
@@ -212,7 +212,7 @@ generate_report <- function(data,
 # If empty, return current template if set
 set_template <- function() {}
 
-#' Get the example template that is used for render testing
+#' Get template that is used for testing
 #'
 #' @return NULL
 #'
