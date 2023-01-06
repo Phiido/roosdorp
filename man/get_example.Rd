@@ -2,10 +2,10 @@
 % Please edit documentation in R/generate_report.R
 \name{get_example}
 \alias{get_example}
-\title{Get the example template that is used for render testing}
+\title{Get template that is used for testing}
 \usage{
 get_example()
 }
 \description{
-Get the example template that is used for render testing
+Get template that is used for testing
 }

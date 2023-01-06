@@ -28,21 +28,23 @@ generate_report(
 \item{output_folder}{Folder to use for output. Default (relative to project): 'output/reports'.}
 
 \item{...}{Additional arguments than can be passed down to
-rmarkdown:render(). Argument quiet is set to TRUE.
-
-Rendering markdown files on a network drive will cause issues.
-As per: https://github.com/rstudio/rmarkdown/issues/1268
-A solution to this is keeping the project and output folders on a hard drive.}
+rmarkdown:render(). Argument quiet is set to TRUE.}
 }
 \description{
 \code{generate_report()}renders multiple reports from custom Rmd-template, and
 uses parallel computing if possible for faster processing.
 }
 \details{
-It uses two Rmarkdown parameters that needs to be present in the template in order for proper rendering:
-df and id. These can then be used in the Rmarkdown file as usual for data handling or visualization.
+It uses two Rmarkdown parameters that needs to be present in the template
+in order for proper rendering:
+df and id. These can then be used in the Rmarkdown file as usual for data
+handling or visualization.
 See the example template for proper setup, \code{get_example()}.
 
 Make sure there is sufficient memory and CPU available. Rmarkdown/tinytex may
 throw errors otherwise. Mostly an issue if running on a laptop.
+
+Rendering markdown files on a network drive will cause issues.
+As per: https://github.com/rstudio/rmarkdown/issues/1268.
+A solution to this is keeping the project and output folders on a hard drive.
 }

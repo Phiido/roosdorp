@@ -10,7 +10,8 @@ install_libs(lib = "all")
 \item{lib}{What group of packages is wanted. Default is "all".}
 }
 \description{
-\code{install_libs()} checks for existing packages and ask for permission to install if any are missing.
+\code{install_libs()} checks for existing packages and ask for
+permission to install if any are missing.
 }
 \details{
 "base" - Main packages used by this package
