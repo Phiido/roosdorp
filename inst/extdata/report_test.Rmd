@@ -1,26 +1,39 @@
 ---
-title: "Generate Test Report"
 output: pdf_document
 params: 
   data: ""
   id: ""
 ---
 
-```{r}
+```{r Setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
 library(tidyverse)
 
 cars <- params$data
 car_name <- params$id
+car <- filter(cars, car == car_name)
 
 ```
 
-Report for the car: `r car_name`
+# Report for: `r car_name`
+This report is a example to showcase how roosdorp::generate_report() can be used to generate a large amount of reports from a user inputted data set.
 
-```{r}
-cars %>%
-  filter(car == car_name) %>%
-  ggplot(aes(x = cyl, y = mpg, fill = cyl)) +
-  geom_point()
+## Introduction
+This report aims to provide a thorough analysis of the performance of the `r car_name` car model in terms of fuel efficiency and power. The data was obtained from the `mtcars` data set and it will be analyzed using descriptive statistics and visualization techniques.
+
+## Descriptive Statistics
+The `r car_name` has `r car$cyl` cylinders and an output of `r car$hp` horsepower. It weighs `r car$wt` tons and has a fuel efficiency of `r car$mpg` miles per gallon (MPG). These values are consistent with the trend in the market, where cars with more cylinders and higher horsepower tend to have lower fuel efficiency.
+
+## Visualization
+A scatter plot is created to visualize the relationship between the number of cylinders and horsepower on one hand and the fuel efficiency (MPG) on the other hand. The `r car_name` is represented by a red dot on the plot. As seen in the scatter plot, there is a clear negative correlation between the number of cylinders and horsepower and the fuel efficiency (MPG).
+
+```{r Plot}
+ggplot(cars, aes(x = mpg, y = hp, size = cyl, color = cyl)) +
+  geom_point(alpha = 0.7) +
+  labs(title = car_name,
+       size = "Cylinders") +
+  xlab("Horsepower") +
+  ylab("MPG (Miles per gallon)") +
+  geom_point(data = car, aes(x = mpg, y = hp), size = 5, color = "red", alpha = 0.7)
 ```
