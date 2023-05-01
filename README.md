@@ -8,12 +8,15 @@
 
 The purpose of the package roosdorp is to compile a set of useful
 functions that do not get everyday use. The main example is to provide a
-function to make it easy to create hundreds or thousands of Rmd-reports.
+function to make it easy to create hundreds or thousands of Rmd-reports
+together with a progress bar. And which also utilizes parallelization
+(if possible, otherwise falls back on serialization) using the parallel
+package.
 
 ## Installation
 
 You can install the development version of roosdorp from
-[GitHub](https://github.com/phiido/rooosdorp) with:
+[GitHub](https://github.com/phiido/roosdorp) with:
 
 ``` r
 # install.packages("devtools")
@@ -33,6 +36,6 @@ library(roosdorp)
 
 ## Note
 
-Rendering markdown files on a network drive will cause issues. As per:
+Rendering markdown files on a network drive will cause issues, as per:
 <https://github.com/rstudio/rmarkdown/issues/1268> A solution to this is
 keeping the project and output folders on a hard drive.
