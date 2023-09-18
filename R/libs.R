@@ -6,7 +6,7 @@ packages <- list(
                "foreach", "doParallel", "reticulate"),
   data  = list("DBI", "XLConnect", "writexl", "foreign", "haven",
                "sweidnumbr", "httr"),
-  epi   = list("Epi", "MortalityTables", "Survival", "ggsurvfit"),
+  epi   = list("Epi", "MortalityTables", "Survival", "ggsurvfit", "dagitty"),
   stat  = list("infer", "pwr", "WebPower","naivebayes", "pROC", "reclin",
                "sigr", "WVPlots", "xgboost", "random", "rsimsum"),
   model = list("tidymodels", "mgcv", "randomForest", "vcd", "rpart",
