@@ -130,7 +130,7 @@ generate_report <- function(data,
     function(...) {
       count <<- count + length(list(...)) - 1
       pbapply::setTimerProgressBar(progress_bar, count)
-      flush.console()
+      utils::flush.console()
       cbind(...)
     }
   }
