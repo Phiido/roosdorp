@@ -4,10 +4,12 @@
 \alias{install_libs}
 \title{Install from a list of packages}
 \usage{
-install_libs(lib = "all")
+install_libs(lib = "all", internal = TRUE)
 }
 \arguments{
-\item{lib}{What group of packages is wanted. Default is "all".}
+\item{lib}{Default 'all'; Vector of either package names or use internal sets}
+
+\item{internal}{Default 'TRUE'; Whether to use internal pre-determined sets}
 }
 \description{
 \code{install_libs()} checks for packages (user input or pre-determined packages;

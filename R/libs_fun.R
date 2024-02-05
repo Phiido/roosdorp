@@ -5,7 +5,8 @@
 #' `install_libs()` checks for packages (user input or pre-determined packages;
 #'   see below) and ask for permission to install if any are missing.
 #'
-#' @param lib What group of packages is wanted. Default is "all".
+#' @param lib Default 'all'; Vector of either package names or use internal sets
+#' @param internal Default 'TRUE'; Whether to use internal pre-determined sets
 #'
 #' @details
 #' "base" - Main packages used by this package
@@ -21,11 +22,13 @@
 #' @return NULL
 #'
 #' @export
-install_libs <- function(lib = "all") {
+install_libs <- function(lib = "all", internal = TRUE) {
 
-  if (length(lib) > 1 & is.character(lib)) {
-    lib_names <- lib
-  } else lib_names <- extract_libs(lib)
+  stopifnot('lib must be character vector' = is.character(lib))
+
+  if (internal) {
+    lib_names <- extract_libs(lib)
+  } else lib_names <- lib
 
   if (purrr::is_empty(lib_names)) {
     stop("Could not find valid grouping of packages.")
