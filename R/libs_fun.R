@@ -2,8 +2,8 @@
 
 #' Install from a list of packages
 #'
-#' `install_libs()` checks for existing packages and ask for
-#'   permission to install if any are missing.
+#' `install_libs()` checks for packages (user input or pre-determined packages;
+#'   see below) and ask for permission to install if any are missing.
 #'
 #' @param lib What group of packages is wanted. Default is "all".
 #'
@@ -22,7 +22,10 @@
 #'
 #' @export
 install_libs <- function(lib = "all") {
-  lib_names <- extract_libs(lib)
+
+  if (length(lib) > 1 & is.character(lib)) {
+    lib_names <- lib
+  } else lib_names <- extract_libs(lib)
 
   if (purrr::is_empty(lib_names)) {
     stop("Could not find valid grouping of packages.")
@@ -101,6 +104,15 @@ unload_libs <- function(lib) {
   handle_libs(lib, method = "unload")
 }
 
+#' Retrieves and prints what the packages are in the pre-determined sets as a character vector
+#'
+#' @param group Default 'all'; Group name of pre-determined sets of packages
+#'
+#' @export
+print_libs <- function(group = 'all') {
+  return(print(extract_libs(group)))
+}
+
 # Helper functions ------------------------------------------------------------
 
 #' Function to handle input and either load or unload packages
@@ -130,9 +142,9 @@ handle_libs <- function(lib, method) {
 #' @noRd
 extract_libs <- function(lib) {
   if (any(lib == "all")) {
-    lib_names <- unlist(packages)
+    lib_names <- unname(unlist(packages))
   } else {
-    lib_names <- unlist(packages[[lib]])
+    lib_names <- unname(unlist(packages[[lib]]))
   }
 }
 
