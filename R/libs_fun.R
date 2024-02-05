@@ -94,8 +94,8 @@ remove_libs <- function(lib) {
 #' @param lib Default NULL; See `install_libs()` for which sets are available.
 #'
 #' @export
-load_libs <- function(lib) {
-  handle_libs(lib, method = "load")
+load_libs <- function(lib, internal) {
+  handle_libs(lib, method = "load", internal = internal)
 }
 
 #' Unloads packages from a pre-determined set.
@@ -103,8 +103,8 @@ load_libs <- function(lib) {
 #' @param lib Default NULL; See `install_libs()` for which sets are available.
 #'
 #' @export
-unload_libs <- function(lib) {
-  handle_libs(lib, method = "unload")
+unload_libs <- function(lib, internal) {
+  handle_libs(lib, method = "unload", internal = internal)
 }
 
 #' Retrieves and prints what the packages are in the pre-determined sets as a character vector
@@ -124,10 +124,11 @@ print_libs <- function(group = 'all') {
 #' @param method Whether to load or unload packages
 #'
 #' @noRd
-handle_libs <- function(lib, method) {
+handle_libs <- function(lib, method, internal) {
   is_lib_null(lib)
 
-  lib_names <- extract_libs(lib)
+  if (internal) lib_names <- extract_libs(lib)
+  else lib_names <- lib
 
   for (package in lib_names) {
     if (method == "load") {
