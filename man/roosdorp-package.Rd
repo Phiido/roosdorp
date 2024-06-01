@@ -17,7 +17,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Thomas Roosdorp \email{thomas.roosdorp@gmail.com}
+\strong{Maintainer}: Thomas Roosdorp \email{github@roosdorp.se}
 
 }
 \keyword{internal}
