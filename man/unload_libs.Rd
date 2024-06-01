@@ -4,10 +4,12 @@
 \alias{unload_libs}
 \title{Unloads packages from a pre-determined set.}
 \usage{
-unload_libs(lib)
+unload_libs(lib, internal)
 }
 \arguments{
 \item{lib}{Default NULL; See \code{install_libs()} for which sets are available.}
+
+\item{internal}{Default 'TRUE'; Whether to use internal pre-determined sets}
 }
 \description{
 Unloads packages from a pre-determined set.

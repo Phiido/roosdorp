@@ -9,22 +9,32 @@
 #' @param internal Default 'TRUE'; Whether to use internal pre-determined sets
 #'
 #' @details
-#' "base" - Main packages used by this package
+#' "base"   - General-purpose packages and those improving quality of life in R programming
 #'
-#' "epi" - Packages for epidemiological data handling
+#' "data"   - Packages focused on data manipulation and interaction
 #'
-#' "mdown" - Packages for different type of markdown handling
+#' "viz"    - Visualization focused packages
 #'
-#' "bench" - Packages for benchmarking purposes
+#' "epi"    - Packages for epidemiological data handling
 #'
-#' "dev" - Packages for development purposes
+#' "stat"   - Statistical analysis and testing packages
+#'
+#' "model"  - Modeling and machine learning packages
+#'
+#' "report" - Packages for reporting and documentation
+#'
+#' "shiny"  - Shiny web application related packages
+#'
+#' "bench"  - Performance analysis and benchmarking packages
+#'
+#' "dev"    - Development tools and utilities
 #'
 #' @return NULL
 #'
 #' @export
 install_libs <- function(lib = "all", internal = TRUE) {
 
-  stopifnot('lib must be character vector' = is.character(lib))
+  base::stopifnot('lib must be character vector' = base::is.character(lib))
 
   if (internal) {
     lib_names <- extract_libs(lib)
@@ -34,7 +44,7 @@ install_libs <- function(lib = "all", internal = TRUE) {
     stop("Could not find valid grouping of packages.")
   }
 
-  installed_indices <- which(lib_names %in% installed.packages())
+  installed_indices <- base::which(lib_names %in% utils::installed.packages())
   install_lib_names <- lib_names[-installed_indices]
   n_libs <- length(install_lib_names)
 
@@ -44,12 +54,12 @@ install_libs <- function(lib = "all", internal = TRUE) {
 
   # Create a message to prompt the user to install the missing libraries
   if (n_libs > 2) {
-    libs_msg <- paste0(paste0(install_lib_names[1:(n_libs - 1)], collapse = ", "), ",")
+    libs_msg <- base::paste0(paste0(install_lib_names[1:(n_libs - 1)], collapse = ", "), ",")
   } else {
     libs_msg <- install_lib_names[1]
   }
 
-  libs_msg <- paste("The following packages could not be found: ",
+  libs_msg <- base::paste("The following packages could not be found: ",
     libs_msg,
     "\n\r\n\rInstall missing packages?",
     collapse = ""
@@ -74,7 +84,7 @@ remove_libs <- function(lib) {
   lib_names <- extract_libs(lib)
 
   # Find the indices of the packages that are installed
-  installed_indices <- which(lib_names %in% installed.packages())
+  installed_indices <- base::which(lib_names %in% installed.packages())
   # Extract the names of the installed packages
   installed_libs <- lib_names[installed_indices]
   # Count the number of packages to be removed
@@ -86,12 +96,13 @@ remove_libs <- function(lib) {
 
   message(paste("Removed", n_libs, "libraries."))
 
-  invisible(lib)
+  base::invisible(lib)
 }
 
 #' Load packages from a pre-determined set.
 #'
 #' @param lib Default NULL; See `install_libs()` for which sets are available.
+#' @param internal Default 'TRUE'; Whether to use internal pre-determined sets
 #'
 #' @export
 load_libs <- function(lib, internal) {
@@ -101,6 +112,7 @@ load_libs <- function(lib, internal) {
 #' Unloads packages from a pre-determined set.
 #'
 #' @param lib Default NULL; See `install_libs()` for which sets are available.
+#' @param internal Default 'TRUE'; Whether to use internal pre-determined sets
 #'
 #' @export
 unload_libs <- function(lib, internal) {

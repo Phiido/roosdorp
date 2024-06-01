@@ -16,13 +16,23 @@ install_libs(lib = "all", internal = TRUE)
 see below) and ask for permission to install if any are missing.
 }
 \details{
-"base" - Main packages used by this package
+"base"   - General-purpose packages and those improving quality of life in R programming
 
-"epi" - Packages for epidemiological data handling
+"data"   - Packages focused on data manipulation and interaction
 
-"mdown" - Packages for different type of markdown handling
+"viz"    - Visualization focused packages
 
-"bench" - Packages for benchmarking purposes
+"epi"    - Packages for epidemiological data handling
 
-"dev" - Packages for development purposes
+"stat"   - Statistical analysis and testing packages
+
+"model"  - Modeling and machine learning packages
+
+"report" - Packages for reporting and documentation
+
+"shiny"  - Shiny web application related packages
+
+"bench"  - Performance analysis and benchmarking packages
+
+"dev"    - Development tools and utilities
 }

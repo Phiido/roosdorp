@@ -4,10 +4,12 @@
 \alias{load_libs}
 \title{Load packages from a pre-determined set.}
 \usage{
-load_libs(lib)
+load_libs(lib, internal)
 }
 \arguments{
 \item{lib}{Default NULL; See \code{install_libs()} for which sets are available.}
+
+\item{internal}{Default 'TRUE'; Whether to use internal pre-determined sets}
 }
 \description{
 Load packages from a pre-determined set.
