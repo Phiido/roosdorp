@@ -1,6 +1,6 @@
 Package: roosdorp
 Title: Personal R Package With Misc Functions
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: person("Thomas", "Roosdorp", email = "github@roosdorp.se", role = c("aut", "cre"))
 Description: A compilation of miscellaneous functions to help with uncommon tasks.
 License: MIT + file LICENSE
