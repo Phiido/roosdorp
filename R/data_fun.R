@@ -11,23 +11,23 @@
 #' @return Data.frame or character.vector
 #'
 #' @export
-label_vars <- function(data,
-                       dict = NULL,
-                       simple = FALSE) {
+label_vars <- function(data, dict = NULL, simple = FALSE) {
 
-  base::stopifnot(base::is.data.frame(data) | base::is.character(data),
-                  base::is.data.frame(dict),
-                  base::is.logical(simple))
+  base::stopifnot(
+    base::is.data.frame(data) | base::is.character(data),
+    base::is.data.frame(dict),
+    base::is.logical(simple)
+  )
 
-  if (is.character(data) & length(data) !=2) stop('Dictionary must have length of 2')
+  if (base::ncol(dict) != 2)
+    stop('Dictionary must have length of 2 columns')
 
   # TODO add functionality by reading rownames
 
   if (base::is.data.frame(data)) {
     names_vars <- base::names(data)
-  } else {
+  } else
     names_vars <- data
-  }
 
   # for readability
   names(dict) <- c('key', 'value')
@@ -35,13 +35,17 @@ label_vars <- function(data,
   vars <- NULL
 
   for (name in names_vars) {
-    if (name %in% dict[,'key']) {
+    if (name %in% dict[, 'key']) {
       vars <- append(vars, dict[dict[, 'key'] == name, 'value'])
-    } else vars <- append(vars, name)
+    } else
+      vars <- append(vars, name)
   }
 
-  if (is.data.frame(data)) names(data) <- vars
+  if (is.data.frame(data))
+    names(data) <- vars
 
-  if (simple & is.data.frame(data)) return(names(data))
-  else return(data)
+  if (simple & is.data.frame(data))
+    return(names(data))
+  else
+    return(data)
 }
