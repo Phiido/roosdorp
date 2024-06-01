@@ -207,16 +207,7 @@ set_template <- function() {}
 #'
 #' @export
 get_example <- function() {
-  template_file <- system.file("extdata", "report_test.Rmd", package = "roosdorp")
-  output_folder <- "./Rmd"
-
-  if (!dir.exists(output_folder)) dir.create(output_folder)
-
-  copied_template_path <- file.path(output_folder, basename(template_file))
-
-  file.copy(template_file, copied_template_path)
-
-  message("Template copied to './Rmd/'")
+  invisible(system(paste('open', system.file("extdata", "report_test.Rmd", package = "roosdorp"))))
 }
 
 #' Generate a test report
