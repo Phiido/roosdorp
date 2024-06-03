@@ -52,7 +52,7 @@ packages <- list(
     'WebPower',     # Basic and advanced statistical power analysis
     'naivebayes',   # Implementation of Naive Bayes classifier
     'pROC',         # Tools to visualize, smooth and compare ROC curves
-    'reclin',       # Record linkage toolkit
+    'reclin2',      # Record linkage toolkit
     'sigr',         # Concise formatting of significance testing results
     'xgboost',      # Extreme Gradient Boosting
     'random',       # True random numbers using RANDOM.ORG
