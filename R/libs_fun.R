@@ -84,7 +84,7 @@ remove_libs <- function(lib) {
   lib_names <- extract_libs(lib)
 
   # Find the indices of the packages that are installed
-  installed_indices <- base::which(lib_names %in% installed.packages())
+  installed_indices <- base::which(lib_names %in% utils::installed.packages())
   # Extract the names of the installed packages
   installed_libs <- lib_names[installed_indices]
   # Count the number of packages to be removed
