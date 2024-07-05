@@ -1,0 +1,16 @@
+
+if (interactive()) {
+  message('Welcome to the Roosdorp package development project!')
+
+  local({
+    libs <- c('devtools',
+              'usethis')
+
+    suppressMessages({
+      invisible(
+        lapply(libs, require, character.only = TRUE)
+      )
+    })
+  })
+}
+
