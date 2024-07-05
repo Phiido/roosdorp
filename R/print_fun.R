@@ -19,7 +19,7 @@ print_rmd <- function(name, params = NULL, output_path = './output', open = FALS
   rmd_file <- base::paste0('./Rmd/', name, '.Rmd')
 
   # TODO handle other file types in a more flexible way
-  output_file <- base::file.path(output_path, type, '.pdf')
+  output_file <- base::file.path(output_path, '.pdf')
 
   base::stopifnot(base::file.exists(rmd_file))
 
