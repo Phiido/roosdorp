@@ -1,7 +1,9 @@
 Package: roosdorp
 Title: Personal R Package With Misc Functions
 Version: 0.4.1
-Authors@R: person("Thomas", "Roosdorp", email = "github@roosdorp.se", role = c("aut", "cre"))
+Authors@R:
+    person("Thomas", "Roosdorp", role = c("aut", "cre", "cph"), email = "thomas@roosdorp.se",
+           comment = c(ORCID = "0009-0002-5146-2777"))
 Description: A compilation of miscellaneous functions to help with uncommon tasks.
 License: MIT + file LICENSE
 URL: https://github.com/phiido/roosdorp
@@ -11,22 +13,15 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Depends: 
     R (>= 3.5.0)
-Imports: 
-    dplyr,
-    fs,
-    rlang,
-    textclean,
-    foreach,
+Imports:
+    archive,
+    cli,
     doSNOW,
-    rmarkdown,
-    tinytex,
-    knitr,
+    dplyr,
+    foreach,
+    fs,
     pbapply,
     purrr,
-    usethis,
-    archive,
-    datasets
-Suggests:
-    devtools,
-    roxygen2
-LazyData: true
+    rlang,
+    rmarkdown,
+    textclean

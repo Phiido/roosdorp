@@ -2,7 +2,8 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom datasets mtcars
 #' @importFrom foreach %dopar%
+#' @importFrom rlang .data
+#' @importFrom rlang .env
 ## usethis namespace: end
 NULL

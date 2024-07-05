@@ -17,7 +17,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Thomas Roosdorp \email{github@roosdorp.se}
+\strong{Maintainer}: Thomas Roosdorp \email{thomas@roosdorp.se} (\href{https://orcid.org/0009-0002-5146-2777}{ORCID}) [copyright holder]
 
 }
 \keyword{internal}
