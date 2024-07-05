@@ -9,12 +9,12 @@ label_vars(data, dict = NULL, simple = FALSE)
 \arguments{
 \item{data}{Input as data frame or character.vector}
 
-\item{dict}{Either data.frame or file.path to dictionary}
+\item{dict}{Input as data.frame with two columns. Should closely follow a key value structure}
 
 \item{simple}{Logical; Should return as character.vector? Otherwise renamed data.frame}
 }
 \value{
-Data.frame or Character vector
+Data.frame or character.vector
 }
 \description{
 \code{label_vars()}returns labels from a data dictionary, either renaming the columns or

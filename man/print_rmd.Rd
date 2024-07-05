@@ -24,7 +24,6 @@ print_rmd(
 \item{quiet}{Logical; Should rendering be quiet?}
 }
 \description{
-\code{print_rmd()}returns labels from a data dictionary, either renaming the columns or
-returns a character vector with the labels. The latter may be useful when wanting
-to label variables used in plots or tables.
+\code{print_rmd()} can be seen as an extension of rmarkdown::render(). You can specify parameters,
+output folder and whether to open it up after finishing the render.
 }
