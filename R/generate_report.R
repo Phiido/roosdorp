@@ -35,12 +35,8 @@ generate_report <- function(data,
                             overwrite = TRUE,
                             output_folder = "./output/reports",
                             ...) {
-  if (!is.data.frame(data)) {
-    stop("Input must be a data frame")
-  }
-  if (!file.exists(template)) {
-    stop("Could not find valid template file")
-  }
+  if (!is.data.frame(data)) stop("Input must be a data frame")
+  if (!file.exists(template)) stop("Could not find valid template file")
 
   message("Attempting to process data and generate reports..")
 
@@ -152,16 +148,16 @@ generate_report <- function(data,
     file_out <- rmarkdown::render(template,
       params = list(
         data = data,
-        id = ids[i]
+        id = ids[.env$i]
       ),
-      output_file = ids[i],
+      output_file = ids[.env$i],
       quiet = TRUE
     )
 
     # Determine the target folder for the rendered file
     if (use_groups) {
       group <- data_clean |>
-        dplyr::filter((!!id_var) == UIDs[i]) |>
+        dplyr::filter((!!id_var) == .data$UIDs[.env$i]) |>
         dplyr::pull(!!by)
 
       target_folder <- file.path(output_folder, group)
@@ -218,8 +214,8 @@ get_example <- function() {
 #'
 #' @export
 generate_test <- function(...) {
-  data <- dplyr::as_tibble(mtcars, rownames = "car")
+  data <- dplyr::as_tibble(datasets::mtcars, rownames = "car")
   template_file <- system.file("extdata", "report_test.Rmd", package = "roosdorp")
 
-  generate_report(data, var = car, template_file, ...)
+  generate_report(data, var = .data$car, template_file, ...)
 }
