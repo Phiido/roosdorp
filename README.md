@@ -16,11 +16,11 @@ package.
 ## Installation
 
 You can install the development version of roosdorp from
-[GitHub](https://github.com/phiido/roosdorp) with:
+[GitHub](https://github.com/thoroo/roosdorp) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("Phiido/roosdorp")
+devtools::install_github("thoroo/roosdorp")
 ```
 
 ## Example

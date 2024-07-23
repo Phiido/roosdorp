@@ -6,8 +6,8 @@ Authors@R:
            comment = c(ORCID = "0009-0002-5146-2777"))
 Description: A compilation of miscellaneous functions to help with uncommon tasks.
 License: MIT + file LICENSE
-URL: https://github.com/phiido/roosdorp
-BugReports: https://github.com/phiido/roosdorp/issues
+URL: https://github.com/thoroo/roosdorp
+BugReports: https://github.com/thoroo/roosdorp/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
